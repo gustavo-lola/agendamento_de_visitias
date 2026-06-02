@@ -5,7 +5,7 @@
 
 void conectarProximo(NoFila* atual, NoFila* proximo) {
     if (atual != NULL) {
-        autal->proximo = proximo;
+        atual->proximo = proximo;
     }
 }
 
@@ -15,8 +15,8 @@ void conectarAnterior(NoFila* atual, NoFila* anterior) {
     }
 }
 
-agendamento* obterDadosFila(NoFila* no) {
-    if (no != Null) {
+Agendamento* obterDadosFila(NoFila* no) {
+    if (no != NULL) {
         return no->dados;
     }
     return NULL;
