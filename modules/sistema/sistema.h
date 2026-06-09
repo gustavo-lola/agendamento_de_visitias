@@ -2,8 +2,8 @@
 #define SISTEMA_H
 
 #include "../agendamento/agendamento.h"
-#include "../fila/fila.h"
-#include "../pilha/pilha.h"
+#include "../../structs/Fila.h"
+#include "../../structs/Pilha.h"
 
 typedef struct {
     Fila* agendamentos;

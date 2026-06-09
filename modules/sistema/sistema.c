@@ -18,17 +18,18 @@ int verificarDisponibilidade(SistemaAgendamento* sistema, char* recurso, char* d
     if (sistema == NULL || sistema->agendamentos == NULL) {
         return 0;
     }
-    NoFila* atual = sistema->agendamentos->inicio;
+    No* atual = sistema->agendamentos->inicio;
     while (atual != NULL) {
-        if (atual->agendamento != NULL && atual->agendamento->status == STATUS_ATIVO) {
-            if (strcmp(atual->agendamento->recurso, recurso) == 0 &&
-                strcmp(atual->agendamento->data, data) == 0) {
+        if (atual->dados != NULL && atual->dados->status == STATUS_ATIVO) {
+            if (strcmp(atual->dados->recurso, recurso) == 0 &&
+                strcmp(atual->dados->data, data) == 0) {
                 return 0;
             }
         }
-        atual = atual->prox;
+        atual = atual->proximo;
     }
     return 1;
+}
 
 int fazerAgendamento(
     SistemaAgendamento* sistema,
@@ -96,8 +97,8 @@ void promoverFilaEspera(SistemaAgendamento* sistema) {
     }
 
     // Verifica o primeiro item da fila de espera (FIFO)
-    NoFila* primeiroNo = sistema->filaEspera->inicio;
-    Agendamento* ag = primeiroNo->agendamento;
+    No* primeiroNo = sistema->filaEspera->inicio;
+    Agendamento* ag = primeiroNo->dados;
 
     if (ag != NULL) {
         // Verifica se o recurso ficou disponível
