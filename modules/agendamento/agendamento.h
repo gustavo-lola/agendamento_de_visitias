@@ -4,7 +4,6 @@
 #define STATUS_ATIVO 1
 #define STATUS_CANCELADO 2
 #define STATUS_CONCLUIDO 3
-#define STATUS_ESPERA 4
 
 typedef struct {
     int id;

@@ -60,9 +60,6 @@ void obterResumo(Agendamento* agendamento) {
         case STATUS_CONCLUIDO:
             printf("Concluído\n");
             break;
-        case STATUS_ESPERA:
-            printf("Em Espera\n");
-            break;
         default:
             printf("Desconhecido\n");
             break;

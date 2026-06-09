@@ -7,7 +7,6 @@ SistemaAgendamento* inicializarSistema() {
     SistemaAgendamento* sistema = (SistemaAgendamento*)malloc(sizeof(SistemaAgendamento));
     if (sistema != NULL) {
         sistema->agendamentos = criarFila();
-        sistema->filaEspera = criarFila();
         sistema->historico = criarPilha();
         sistema->proximoId = 1;
     }
@@ -43,20 +42,16 @@ int fazerAgendamento(
     }
 
     int id = sistema->proximoId;
-    int disponivel = verificarDisponibilidade(sistema, recurso, data);
-    int status = disponivel ? STATUS_ATIVO : STATUS_ESPERA;
+    if (!verificarDisponibilidade(sistema, recurso, data)) {
+        return -1;
+    }
 
-    Agendamento* novo = criarAgendamento(id, usuario, recurso, data, horario, status);
+    Agendamento* novo = criarAgendamento(id, usuario, recurso, data, horario, STATUS_ATIVO);
     if (novo == NULL) {
         return -1;
     }
 
-    if (disponivel) {
-        inserirFila(sistema->agendamentos, novo);
-    } else {
-        inserirFila(sistema->filaEspera, novo);
-    }
-
+    inserirFila(sistema->agendamentos, novo);
     sistema->proximoId++;
     return id;
 }
@@ -67,48 +62,14 @@ int cancelarAgendamento(SistemaAgendamento* sistema, int id) {
     }
 
     Agendamento* ag = buscarFila(sistema->agendamentos, id);
-    int deFilaEspera = 0;
-    if (ag == NULL) {
-        ag = buscarFila(sistema->filaEspera, id);
-        deFilaEspera = 1;
-    }
-
     if (ag == NULL) {
         return 0;
     }
 
-    // Alterar status
     atualizarStatus(ag, STATUS_CANCELADO);
-
-    // Mover para historico e remover da fila correspondente
     moverParaHistorico(sistema, id);
 
-    // Se removeu um agendamento ativo, tenta promover o primeiro da fila de espera
-    if (!deFilaEspera) {
-        promoverFilaEspera(sistema);
-    }
-
     return 1;
-}
-
-void promoverFilaEspera(SistemaAgendamento* sistema) {
-    if (sistema == NULL || sistema->filaEspera == NULL || sistema->filaEspera->inicio == NULL) {
-        return;
-    }
-
-    // Verifica o primeiro item da fila de espera (FIFO)
-    No* primeiroNo = sistema->filaEspera->inicio;
-    Agendamento* ag = primeiroNo->dados;
-
-    if (ag != NULL) {
-        // Verifica se o recurso ficou disponível
-        if (verificarDisponibilidade(sistema, ag->recurso, ag->data)) {
-            removerFila(sistema->filaEspera, ag->id);
-            atualizarStatus(ag, STATUS_ATIVO);
-            inserirFila(sistema->agendamentos, ag);
-            printf("Fila de Espera: Agendamento ID %d promovido para ATIVO (Recurso %s liberado).\n", ag->id, ag->recurso);
-        }
-    }
 }
 
 void moverParaHistorico(SistemaAgendamento* sistema, int id) {
@@ -116,12 +77,7 @@ void moverParaHistorico(SistemaAgendamento* sistema, int id) {
         return;
     }
 
-    // Tenta remover da fila de ativos
     Agendamento* ag = removerFila(sistema->agendamentos, id);
-    if (ag == NULL) {
-        ag = removerFila(sistema->filaEspera, id);
-    }
-
     if (ag != NULL) {
         empilhar(sistema->historico, ag);
     }
@@ -133,14 +89,6 @@ void exibirAgendamentos(SistemaAgendamento* sistema) {
     }
     printf("\n--- Agendamentos Ativos ---\n");
     listarFila(sistema->agendamentos);
-}
-
-void exibirFilaEspera(SistemaAgendamento* sistema) {
-    if (sistema == NULL) {
-        return;
-    }
-    printf("\n--- Fila de Espera ---\n");
-    listarFila(sistema->filaEspera);
 }
 
 void exibirHistorico(SistemaAgendamento* sistema) {
@@ -156,7 +104,6 @@ void liberarSistema(SistemaAgendamento* sistema) {
         return;
     }
     liberarFila(sistema->agendamentos);
-    liberarFila(sistema->filaEspera);
     liberarPilha(sistema->historico);
     free(sistema);
 }
