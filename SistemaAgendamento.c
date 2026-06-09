@@ -28,8 +28,7 @@ void menuPrincipal() {
         printf("1 - Fazer agendamento\n");
         printf("2 - Cancelar agendamento\n");
         printf("3 - Listar agendamentos ativos\n");
-        printf("4 - Listar fila de espera\n");
-        printf("5 - Listar histórico\n");
+        printf("4 - Listar histórico\n");
         printf("0 - Sair\n");
         printf("Opção: ");
 
@@ -58,14 +57,9 @@ void menuPrincipal() {
 
                 int id = fazerAgendamento(sistema, usuario, recurso, data, horario);
                 if (id != -1) {
-                    Agendamento* ag = buscarFila(sistema->agendamentos, id);
-                    if (ag != NULL) {
-                        printf("Sucesso! Agendamento ATIVO criado com ID: %d\n", id);
-                    } else {
-                        printf("Recurso indisponível. Agendamento inserido na FILA DE ESPERA com ID: %d\n", id);
-                    }
+                    printf("Sucesso! Agendamento ATIVO criado com ID: %d\n", id);
                 } else {
-                    printf("Erro ao realizar agendamento.\n");
+                    printf("Erro: recurso indisponível ou falha ao realizar agendamento.\n");
                 }
                 break;
             }
@@ -87,9 +81,6 @@ void menuPrincipal() {
                 exibirAgendamentos(sistema);
                 break;
             case 4:
-                exibirFilaEspera(sistema);
-                break;
-            case 5:
                 exibirHistorico(sistema);
                 break;
             case 0:

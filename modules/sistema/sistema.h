@@ -2,12 +2,11 @@
 #define SISTEMA_H
 
 #include "../agendamento/agendamento.h"
-#include "../fila/fila.h"
-#include "../pilha/pilha.h"
+#include "../../structs/Fila.h"
+#include "../../structs/Pilha.h"
 
 typedef struct {
     Fila* agendamentos;
-    Fila* filaEspera;
     Pilha* historico;
     int proximoId;
 } SistemaAgendamento;
@@ -33,20 +32,12 @@ int cancelarAgendamento(
     int id
 );
 
-void promoverFilaEspera(
-    SistemaAgendamento* sistema
-);
-
 void moverParaHistorico(
     SistemaAgendamento* sistema,
     int id
 );
 
 void exibirAgendamentos(
-    SistemaAgendamento* sistema
-);
-
-void exibirFilaEspera(
     SistemaAgendamento* sistema
 );
 

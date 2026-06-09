@@ -1,17 +1,20 @@
 #ifndef AGENDAMENTO_DE_VISITIAS_FILA_H
 #define AGENDAMENTO_DE_VISITIAS_FILA_H
-#include "NoFila.h"
+
+#include "No.h"
 
 typedef struct {
-    NoFila* inicio;
-    NoFila* fim;
+    No* inicio;
+    No* fim;
     int tamanho;
 } Fila;
 
-void inserir(Fila* f, NoFila* no);
-Agendamento* remover(Fila* f, int id);
-Agendamento* buscar(Fila* f, int id);
-void listarFila(Fila* f);
-int estaVaziaFila(Fila* f);
+Fila* criarFila();
+void inserirFila(Fila* fila, Agendamento* agendamento);
+Agendamento* removerFila(Fila* fila, int id);
+Agendamento* buscarFila(Fila* fila, int id);
+void listarFila(Fila* fila);
+int estaVaziaFila(Fila* fila);
+void liberarFila(Fila* fila);
 
-#endif //AGENDAMENTO_DE_VISITIAS_FILA_H
+#endif // AGENDAMENTO_DE_VISITIAS_FILA_H
